@@ -16,6 +16,7 @@ var player;
 var moved = false;
 var moving = false;
 var finished = false;
+var last = [-1, -1];
 selection.src = "resources/selection.png"
 
 $(document).ready(function() {
@@ -56,6 +57,7 @@ function surrenderEvent(event){
 
 function moveEvent(event){
   if(mat[selected[0]][selected[1]] % 2 == turn && mat[selected[0]][selected[1]]){
+    last = [-1, -1]
     getAvailableMoves(false);
     if(moved && availableMoves.length == 0)
       nextTurn.disabled = false;
@@ -81,6 +83,7 @@ function clickEvent(event){
       move.disabled = true;
       mat[new_selected[0]][new_selected[1]] = mat[selected[0]][selected[1]];
       mat[selected[0]][selected[1]] = 0;
+      last = selected;
       selected = new_selected;
       if((selected[0] == 0 || selected[0] == 7) && mat[selected[0]][selected[1]] < 3)
         mat[selected[0]][selected[1]] += 2;
@@ -165,6 +168,9 @@ function getAvailableMoves(jumped){
 
     }
   }
+  if(availableMoves.indexOf(last) >= 0)
+    jumpMoves.splice(availableMoves.indexOf(last), 1);
+  availableMoves.remove(last);
 }
 
 function clearMoves(){
@@ -259,8 +265,35 @@ if (!Array.prototype.equals){
         this !== null && other !== null &&
         this.length === other.length &&
         this
-            .map(function (val, idx) { return val === other[idx]; })
+            .map(function (val, idx) {
+                   if (typeof val === "object" && typeof other[idx] === "object"){
+                     return val.equals(other[idx]);
+                   }
+                   else if(typeof val != "object" && typeof other[idx] != "object"){
+                     return val === other[idx];
+                   }
+                   else{
+                     return false;
+                   }
+                 })
             .reduce(function (prev, cur) { return prev && cur; }, true)
     );
   };
 };
+
+if (!Array.prototype.remove){
+  Array.prototype.remove = function(obj){
+    for(var i = 0; i < this.length; i++) {
+      if (typeof this[i] === "object" && typeof obj === "object"){
+        if (this[i].equals(obj)) {
+          this.splice(i, 1);
+        }
+      }
+      else if(typeof this[i] != "object" && typeof obj != "object"){
+        if (this[i] == obj ) {
+          this.splice(i, 1);
+        }
+      }
+    }
+  }
+}
