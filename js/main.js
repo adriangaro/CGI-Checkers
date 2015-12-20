@@ -55,7 +55,7 @@ function surrenderEvent(event){
 }
 
 function moveEvent(event){
-  if(mat[selected[0]][selected[1]] % 2 == turn){
+  if(mat[selected[0]][selected[1]] % 2 == turn && mat[selected[0]][selected[1]]){
     getAvailableMoves(false);
     if(moved && availableMoves.length == 0)
       nextTurn.disabled = false;
@@ -82,6 +82,8 @@ function clickEvent(event){
       mat[new_selected[0]][new_selected[1]] = mat[selected[0]][selected[1]];
       mat[selected[0]][selected[1]] = 0;
       selected = new_selected;
+      if((selected[0] == 0 || selected[0] == 7) && mat[selected[0]][selected[1]] < 3)
+        mat[selected[0]][selected[1]] += 2;
       if(jumpMoves[availableMoves.indexOf(selected)][0]){
         if(mat[jumpMoves[availableMoves.indexOf(selected)][1][0]][jumpMoves[availableMoves.indexOf(selected)][1][1]] % 2 != mat[selected[0]][selected[1]] % 2){
           mat[jumpMoves[availableMoves.indexOf(selected)][1][0]][jumpMoves[availableMoves.indexOf(selected)][1][1]] = 0;
@@ -140,23 +142,27 @@ function getAvailableMoves(jumped){
   moves = mat[selected[0]][selected[1]] < 3 ? dirNorm : dirKing;
   dir = mat[selected[0]][selected[1]] % 2 == 0 ? -1 : 1
   for(var i = 0; i < moves.length; i++){
-    if(mat[selected[0] + dir * moves[i][0]][selected[1] + dir * moves[i][1]] && !mat[selected[0] + dir * 2 * moves[i][0]][selected[1] + dir * 2 * moves[i][1]]){
-      availableMoves.push([selected[0] + dir * 2 * moves[i][0], selected[1] + dir * 2 * moves[i][1]]);
-      jumpMoves.push([true, [selected[0] + dir * moves[i][0], selected[1] + dir * moves[i][1]]]);
-      if(availableMoves.last()[0] < 0 || availableMoves.last()[1] < 0 ||
-         availableMoves.last()[0] > 7 || availableMoves.last()[1] > 7){
-        availableMoves.pop();
-        jumpMoves.pop();
+    try{
+      if(mat[selected[0] + dir * moves[i][0]][selected[1] + dir * moves[i][1]] && !mat[selected[0] + dir * 2 * moves[i][0]][selected[1] + dir * 2 * moves[i][1]]){
+        availableMoves.push([selected[0] + dir * 2 * moves[i][0], selected[1] + dir * 2 * moves[i][1]]);
+        jumpMoves.push([true, [selected[0] + dir * moves[i][0], selected[1] + dir * moves[i][1]]]);
+        if(availableMoves.last()[0] < 0 || availableMoves.last()[1] < 0 ||
+           availableMoves.last()[0] > 7 || availableMoves.last()[1] > 7){
+          availableMoves.pop();
+          jumpMoves.pop();
+        }
       }
-    }
-    else if (!mat[selected[0] + dir * moves[i][0]][selected[1] + dir * moves[i][1]] && !jumped){
-      availableMoves.push([selected[0] + dir * moves[i][0], selected[1] + dir * moves[i][1]]);
-      jumpMoves.push([false, [-1, -1]]);
-      if(availableMoves.last()[0] < 0 || availableMoves.last()[1] < 0 ||
-         availableMoves.last()[0] > 7 || availableMoves.last()[1] > 7){
-        availableMoves.pop();
-        jumpMoves.pop();
+      else if (!mat[selected[0] + dir * moves[i][0]][selected[1] + dir * moves[i][1]] && !jumped){
+        availableMoves.push([selected[0] + dir * moves[i][0], selected[1] + dir * moves[i][1]]);
+        jumpMoves.push([false, [-1, -1]]);
+        if(availableMoves.last()[0] < 0 || availableMoves.last()[1] < 0 ||
+           availableMoves.last()[0] > 7 || availableMoves.last()[1] > 7){
+          availableMoves.pop();
+          jumpMoves.pop();
+        }
       }
+    }catch(e){
+
     }
   }
 }
