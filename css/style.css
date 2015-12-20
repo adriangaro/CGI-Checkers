@@ -1,0 +1,35 @@
+* {
+  padding:0;
+  margin:0;
+}
+
+.header {
+  height: 10vh;
+  background-color: black;
+  width: 100vw;
+  color: white;
+  text-align: center;
+  font-size: 6vh;
+  vertical-align: middle;
+  line-height: 10vh;
+}
+
+#board {
+  position: absolute;
+}
+
+#top {
+  height: 20vh;
+  width: 100vw;
+  margin: auto;
+}
+
+#player{
+  font-size: 9vh;
+  margin-top: 2vh;
+  text-align: center;
+}
+
+#buttons{
+  text-align: center;
+}
