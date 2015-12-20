@@ -1,0 +1,5 @@
+You must move a piece every turn, if u can't move anything u surrender.
+To move a piece u select it and the press move. If u pressed move there will appear the options where u can move with a blue square.
+In this stage if u select anything else other then the blue squares, u will select another piece to move.
+If u selected a blue square you are locked to move that piece until u can'y move it anymore.
+After that u can give the turn to the other player.
